@@ -1,0 +1,97 @@
+{
+  "projectName": "react-use-modals",
+  "projectOwner": "the-bugging",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 70,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "olavoparno",
+      "name": "Olavo Parno",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7513162?v=4",
+      "profile": "https://olavoparno.github.io",
+      "contributions": [
+        "ideas",
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "gianpietro1",
+      "name": "Gianpietro Lavado",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10046142?v=4",
+      "profile": "https://github.com/gianpietro1",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ivan-kleshnin",
+      "name": "Ivan Kleshnin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2128182?v=4",
+      "profile": "https://paqmind.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "ajayvarghese",
+      "name": "Ajay Varghese",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12490903?v=4",
+      "profile": "https://ajayvarghese.netlify.app/",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "honicole",
+      "name": "honicole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11463889?v=4",
+      "profile": "https://github.com/honicole",
+      "contributions": [
+        "tool",
+        "code",
+        "ideas",
+        "doc"
+      ]
+    },
+    {
+      "login": "georgibakken",
+      "name": "Georg Bakken Idland",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16558100?v=4",
+      "profile": "https://github.com/georgibakken",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "vith",
+      "name": "Jason Papakostas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3265539?v=4",
+      "profile": "https://github.com/vith",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "LuighiV",
+      "name": "Luighi Viton-Zorrilla",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6945270?v=4",
+      "profile": "https://luighiviton.com",
+      "contributions": [
+        "bug",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "commitConvention": "angular"
+}
