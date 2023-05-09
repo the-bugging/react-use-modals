@@ -1,110 +1,106 @@
-import * as React from 'react';
-import {
-  checkReadyState,
-  hotjarIdentifyScript,
-  hotjarInitScript,
-  hotjarStateChangeScript,
-  hotjarTagRecordingScript,
-} from './dependencies';
-import { IUseHotjar, TUserInfo } from './types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { UseModalsOptions, UseModalsReturnType } from './types';
 
-export default function useHotjar(): IUseHotjar {
-  const isReadyState = checkReadyState();
-  const [readyState, setReadyState] = React.useState(
-    React.useMemo(() => isReadyState, [isReadyState])
-  );
+const useModals = (props?: UseModalsOptions): UseModalsReturnType => {
+  const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef<HTMLDialogElement | null>(null);
 
-  const initHotjar = React.useCallback(
-    (
-      hotjarId: number,
-      hotjarVersion: number,
-      hotjarDebug?: boolean,
-      logCallback?: (...data: unknown[]) => void
-    ): boolean => {
-      try {
-        hotjarInitScript(hotjarId, hotjarVersion, !!hotjarDebug);
+  const { closeOnBackdropClick, preventCloseOnEscape, onCloseCallback } =
+    props || {};
 
-        setReadyState(true);
+  const openModal = useCallback(() => {
+    const modalElement = modalRef.current;
 
-        if (logCallback && typeof logCallback === 'function')
-          logCallback(`Hotjar ready: true`);
+    if (modalElement) {
+      modalElement.showModal();
+      setIsOpen(true);
+    }
+  }, []);
 
-        return true;
-      } catch (error) {
-        console.error(`Hotjar error: ${(error as Error).message}`);
+  const closeModal = useCallback(() => {
+    const modalElement = modalRef.current;
 
-        return false;
+    if (modalElement) {
+      modalElement.close();
+      setIsOpen(false);
+      onCloseCallback?.(modalElement.id);
+    }
+  }, [onCloseCallback]);
+
+  const handleBackdropClick = useCallback(
+    (e: MouseEvent) => {
+      const modalElement = modalRef.current;
+
+      if (modalElement) {
+        const dialogDimensions = modalElement.getBoundingClientRect();
+
+        if (
+          e.clientX < dialogDimensions.left ||
+          e.clientX > dialogDimensions.right ||
+          e.clientY < dialogDimensions.top ||
+          e.clientY > dialogDimensions.bottom
+        ) {
+          closeModal();
+        }
       }
     },
-    []
+    [closeModal]
   );
 
-  const identifyHotjar = React.useCallback(
-    (
-      userId: string | null,
-      userInfo: TUserInfo,
-      logCallback?: (...data: unknown[]) => void
-    ): boolean => {
-      try {
-        hotjarIdentifyScript(userId, userInfo);
-
-        if (logCallback && typeof logCallback === 'function')
-          logCallback(`Hotjar identified`);
-
-        return true;
-      } catch (error) {
-        console.error(`Hotjar error: ${(error as Error).message}`);
-
-        return false;
+  const handleEscapePress = useCallback(
+    (e) => {
+      if (preventCloseOnEscape) {
+        return e.preventDefault();
       }
+
+      return closeModal();
     },
-    []
+    [preventCloseOnEscape, closeModal]
   );
 
-  const stateChange = React.useCallback(
-    (relativePath: string, logCallback?: (...data: unknown[]) => void) => {
-      try {
-        hotjarStateChangeScript(relativePath);
+  useEffect(() => {
+    const modalElement = modalRef.current;
 
-        if (logCallback && typeof logCallback === 'function')
-          logCallback(`Hotjar stateChanged`);
+    if (modalElement) {
+      modalElement.addEventListener('cancel', handleEscapePress);
+    }
 
-        return true;
-      } catch (error) {
-        console.error(`Hotjar error: ${(error as Error).message}`);
-
-        return false;
+    return () => {
+      if (modalElement) {
+        modalElement.removeEventListener('cancel', handleEscapePress);
       }
-    },
-    []
-  );
+    };
+  }, [handleEscapePress]);
 
-  const tagRecording = React.useCallback(
-    (tags: string[], logCallback?: (...data: unknown[]) => void) => {
-      try {
-        hotjarTagRecordingScript(tags);
+  useEffect(() => {
+    const modalElement = modalRef.current;
 
-        if (logCallback && typeof logCallback === 'function')
-          logCallback(`Hotjar tagRecording`);
+    if (closeOnBackdropClick && modalElement) {
+      modalElement.addEventListener('click', handleBackdropClick);
+    }
 
-        return true;
-      } catch (error) {
-        console.error(`Hotjar error: ${(error as Error).message}`);
-
-        return false;
+    return () => {
+      if (closeOnBackdropClick && modalElement) {
+        modalElement.removeEventListener('click', handleBackdropClick);
       }
-    },
-    []
-  );
+    };
+  }, [closeOnBackdropClick, handleBackdropClick]);
 
-  return React.useMemo(
-    () => ({
-      readyState,
-      stateChange,
-      tagRecording,
-      initHotjar,
-      identifyHotjar,
-    }),
-    [readyState, stateChange, tagRecording, initHotjar, identifyHotjar]
-  );
-}
+  const result = [
+    modalRef,
+    isOpen,
+    openModal,
+    closeModal,
+  ] as UseModalsReturnType;
+
+  Object.assign(result, {
+    modalRef,
+    isOpen,
+    openModal,
+    closeModal,
+  });
+
+  return result;
+};
+
+export default useModals;
